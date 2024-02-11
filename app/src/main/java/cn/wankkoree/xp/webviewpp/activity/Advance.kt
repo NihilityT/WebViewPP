@@ -13,6 +13,7 @@ import cn.wankkoree.xp.webviewpp.data.ModuleSP
 import cn.wankkoree.xp.webviewpp.databinding.ActivityAdvanceBinding
 import cn.wankkoree.xp.webviewpp.databinding.DialogDataSourceBinding
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,6 +32,7 @@ class Advance : AppCompatActivity() {
         setContentView(viewBinding.root)
         AppCenterTool.trackEvent("activity", hashMapOf("activity" to "advance"))
 
+        val modulePrefs = modulePrefs()
         viewBinding.advanceSettingDataSource.setOnClickListener {
             val dialogBinding = DialogDataSourceBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(this@Advance).apply {
@@ -39,7 +41,7 @@ class Advance : AppCompatActivity() {
                 setNegativeButton(getString(R.string.cancel)) { _, _ -> }
                 setPositiveButton(getString(R.string.save), null)
 
-                val dataSource = prefs("module").get(ModuleSP.data_source)
+                val dataSource = modulePrefs.get(ModuleSP.data_source)
                 when (dataSource) {
                     "https://raw.githubusercontent.com/WankkoRee/WebViewPP-Rules/master" -> dialogBinding.dialogDataSource.check(dialogBinding.dialogDataSourceGithub.id)
                     "https://raw.fastgit.org/WankkoRee/WebViewPP-Rules/master" -> dialogBinding.dialogDataSource.check(dialogBinding.dialogDataSourceFastgit.id)
@@ -95,13 +97,13 @@ class Advance : AppCompatActivity() {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                     when (dialogBinding.dialogDataSource.checkedRadioButtonId) {
                         dialogBinding.dialogDataSourceGithub.id -> {
-                            prefs("module").edit {put(ModuleSP.data_source, "https://raw.githubusercontent.com/WankkoRee/WebViewPP-Rules/master")}
+                            modulePrefs.edit {put(ModuleSP.data_source, "https://raw.githubusercontent.com/WankkoRee/WebViewPP-Rules/master")}
                         }
                         dialogBinding.dialogDataSourceFastgit.id -> {
-                            prefs("module").edit {put(ModuleSP.data_source, "https://raw.fastgit.org/WankkoRee/WebViewPP-Rules/master")}
+                            modulePrefs.edit {put(ModuleSP.data_source, "https://raw.fastgit.org/WankkoRee/WebViewPP-Rules/master")}
                         }
                         dialogBinding.dialogDataSourceCustom.id -> {
-                            prefs("module").edit {put(ModuleSP.data_source, dialogBinding.dialogDataSourceCustomInputValue.text.toString())}
+                            modulePrefs.edit {put(ModuleSP.data_source, dialogBinding.dialogDataSourceCustomInputValue.text.toString())}
                         }
                     }
                     refresh()
@@ -114,7 +116,7 @@ class Advance : AppCompatActivity() {
             viewBinding.advanceSettingAutoCheckUpdateValue.isChecked = !viewBinding.advanceSettingAutoCheckUpdateValue.isChecked
         }
         viewBinding.advanceSettingAutoCheckUpdateValue.setOnCheckedChangeListener { _, isChecked ->
-            prefs("module").edit { put(ModuleSP.auto_check_update, isChecked) }
+            modulePrefs.edit { put(ModuleSP.auto_check_update, isChecked) }
             refresh()
         }
 
@@ -122,7 +124,7 @@ class Advance : AppCompatActivity() {
             viewBinding.advanceSettingAppCenterValue.isChecked = !viewBinding.advanceSettingAppCenterValue.isChecked
         }
         viewBinding.advanceSettingAppCenterValue.setOnCheckedChangeListener { _, isChecked ->
-            prefs("module").edit { put(ModuleSP.app_center, isChecked) }
+            modulePrefs.edit { put(ModuleSP.app_center, isChecked) }
             AppCenterTool.init()
             refresh()
         }
@@ -159,7 +161,7 @@ class Advance : AppCompatActivity() {
     }
 
     private fun refresh() {
-        with(prefs("module")) {
+        with(modulePrefs()) {
             viewBinding.advanceSettingDataSourceValue.text = get(ModuleSP.data_source)
             viewBinding.advanceSettingAutoCheckUpdateValue.isChecked = get(ModuleSP.auto_check_update)
             viewBinding.advanceSettingAppCenterValue.isChecked = get(ModuleSP.app_center)

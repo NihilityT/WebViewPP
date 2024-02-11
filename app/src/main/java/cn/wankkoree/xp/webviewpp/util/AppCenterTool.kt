@@ -16,7 +16,7 @@ object AppCenterTool {
 
     private var initialized = false
     fun init() {
-        if (application.prefs("module").get(ModuleSP.app_center)) { // 开启
+        if (enableAppCenter()) { // 开启
             if (!initialized) { // 未初始化
                 AppCenter.start(application, BuildConfig.APP_CENTER_SECRET, Analytics::class.java, Crashes::class.java)
                 if (AppCenter.isConfigured()) initialized = true
@@ -31,37 +31,39 @@ object AppCenterTool {
     }
     fun trackEvent (name : String) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Analytics.trackEvent(name)
     }
     fun trackEvent (name : String, properties : Map<String, String>) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Analytics.trackEvent(name, properties)
     }
     fun trackEvent (name : String, properties : Map<String, String>, flags : Int) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Analytics.trackEvent(name, properties, flags)
     }
     fun trackEvent (name : String, properties : EventProperties) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Analytics.trackEvent(name, properties)
     }
     fun trackEvent (name : String, properties : EventProperties, flags : Int) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Analytics.trackEvent(name, properties, flags)
     }
     fun trackError (throwable: Throwable) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Crashes.trackError(throwable)
     }
     fun trackError (throwable: Throwable, properties: Map<String, String>?, attachments: Iterable<ErrorAttachmentLog>?) {
         if (!initialized) return
-        if (!application.prefs("module").get(ModuleSP.app_center)) return
+        if (!enableAppCenter()) return
         Crashes.trackError(throwable, properties, attachments)
     }
+
+    private fun enableAppCenter() = application.modulePrefs().get(ModuleSP.app_center)
 }

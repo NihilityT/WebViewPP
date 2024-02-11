@@ -22,6 +22,7 @@ import cn.wankkoree.xp.webviewpp.http.bean.Metadata
 import cn.wankkoree.xp.webviewpp.http.bean.api.npm.Versions
 import cn.wankkoree.xp.webviewpp.databinding.ActivityResourcesBinding
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.requests.CancellableRequest
 import com.github.kittinunf.fuel.gson.responseObject
@@ -325,7 +326,7 @@ class Resources : AppCompatActivity() {
             }
 
         viewBinding.resourcesNebulaucsdkDownload.isEnabled = false
-        Fuel.get("${prefs("module").get(ModuleSP.data_source)}/resources/nebulaucsdk/metadata.json")
+        Fuel.get("${modulePrefs().get(ModuleSP.data_source)}/resources/nebulaucsdk/metadata.json")
             .responseObject<Metadata> { _, _, result ->
                 result.fold({ metadata ->
                     val adapter = ArrayAdapter(this@Resources, R.layout.component_spinneritem, metadata.versions)
@@ -721,8 +722,8 @@ class Resources : AppCompatActivity() {
                 version,
                 ResourcesSP.nebulaUCSDK_versions,
                 listOf(
-                    Pair("${prefs("module").get(ModuleSP.data_source)}/resources/nebulaucsdk/$version/arm64-v8a.so", "nebulaUCSDK_arm64-v8a"),
-                    Pair("${prefs("module").get(ModuleSP.data_source)}/resources/nebulaucsdk/$version/armeabi-v7a.so", "nebulaUCSDK_armeabi-v7a"),
+                    Pair("${modulePrefs().get(ModuleSP.data_source)}/resources/nebulaucsdk/$version/arm64-v8a.so", "nebulaUCSDK_arm64-v8a"),
+                    Pair("${modulePrefs().get(ModuleSP.data_source)}/resources/nebulaucsdk/$version/armeabi-v7a.so", "nebulaUCSDK_armeabi-v7a"),
                 ),
                 base64 = true
             )

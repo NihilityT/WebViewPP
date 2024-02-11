@@ -7,6 +7,7 @@ import cn.wankkoree.xp.webviewpp.data.getSet
 import cn.wankkoree.xp.webviewpp.hook.debug.*
 import cn.wankkoree.xp.webviewpp.hook.method.*
 import cn.wankkoree.xp.webviewpp.http.bean.HookRules
+import cn.wankkoree.xp.webviewpp.util.appPrefs
 import com.google.gson.Gson
 import com.highcapable.yukihookapi.YukiHookAPI
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
@@ -56,7 +57,7 @@ class Main : IYukiHookXposedInit {
                 loggerW(msg = "do not hook webview library: $mProcessName")
                 return@encase // 不 hook WebView 本身
             }
-            prefs("apps_$mProcessName").let { pref ->
+            appPrefs().let { pref ->
                 if (!pref.get(AppSP.is_enabled)) {
                     loggerI(msg = "$mProcessName hooking not enabled")
                     return@encase // 目标 App 的 Hook 未启用
@@ -130,7 +131,7 @@ class Main : IYukiHookXposedInit {
 }
 
 private fun PackageParam.doHook() {
-    prefs("apps_${Main.mProcessName}").let { pref ->
+    appPrefs().let { pref ->
         val cpuArch = with(appInfo.nativeLibraryDir) {
             when {
                 endsWith("arm64") -> "arm64-v8a"
@@ -223,3 +224,4 @@ private fun PackageParam.doHook() {
         }
     }
 }
+

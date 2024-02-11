@@ -26,6 +26,7 @@ import cn.wankkoree.xp.webviewpp.http.bean.api.github.RepoRelease
 import cn.wankkoree.xp.webviewpp.databinding.ActivityMainBinding
 import cn.wankkoree.xp.webviewpp.databinding.DialogSupportBinding
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -72,7 +73,7 @@ class Main : AppCompatActivity() {
             viewBinding.mainXposedText.visibility = View.GONE
         }
         refresh()
-        if (prefs("module").get(ModuleSP.auto_check_update)) checkUpdate()
+        if (modulePrefs().get(ModuleSP.auto_check_update)) checkUpdate()
 
         viewBinding.mainToolbarMenu.setOnClickListener {
             if (!isXposedModuleActive && !BuildConfig.DEBUG) {

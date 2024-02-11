@@ -4,6 +4,8 @@ import android.util.Base64
 import cn.wankkoree.xp.webviewpp.data.AppSP
 import cn.wankkoree.xp.webviewpp.hook.Main
 import cn.wankkoree.xp.webviewpp.hook.methodX
+import cn.wankkoree.xp.webviewpp.util.appPrefs
+import cn.wankkoree.xp.webviewpp.util.resource
 import com.highcapable.yukihookapi.hook.log.loggerD
 import com.highcapable.yukihookapi.hook.log.loggerE
 import com.highcapable.yukihookapi.hook.log.loggerI
@@ -25,11 +27,12 @@ fun PackageParam.replaceNebulaUCSDK (
             methodX(Method_updateUCVersionAndSdcardPath)
             afterHook {
                 if (Main.debug) loggerD(msg = "${instanceClass.name}.updateUCVersionAndSdcardPath({sInitUcFromSdcardPath=\$nebulaUCSDK})")
-                if (prefs("apps_${Main.mProcessName}").get(AppSP.nebulaUCSDK)) {
+                val appPrefs = appPrefs()
+                if (appPrefs.get(AppSP.nebulaUCSDK)) {
                     File(appContext!!.getExternalFilesDir("nebulaUCSDK"), "libWebViewCore_ri_7z_uc.so").also {
                         if (!it.exists()) {
                             val nebulaUCSDK = Base64.decode(
-                                prefs("resources_nebulaUCSDK_${prefs("apps_${Main.mProcessName}").get(AppSP.nebulaUCSDK_version)}").getString("nebulaUCSDK_$cpuArch"),
+                                resource("nebulaUCSDK", appPrefs.get(AppSP.nebulaUCSDK_version)).getString("nebulaUCSDK_$cpuArch"),
                                 Base64.NO_WRAP
                             )
                             it.writeBytes(nebulaUCSDK)

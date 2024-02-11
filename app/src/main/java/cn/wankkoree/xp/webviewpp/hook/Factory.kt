@@ -8,31 +8,34 @@ import java.util.Locale
 val methodRegex = Regex("^(?:\\( *(.*?) *\\))? *(.+?)(?: *\\( *(.*?) *\\))?\$")
 
 fun YukiMemberHookCreator.MemberHookCreator.methodX(methodDefinition : String) = methodRegex.matchEntire(methodDefinition)!!.let {
-    if (it.groups[1] == null && it.groups[3] == null) {
-        method { name = it.groupValues[2] }.all()
-    } else if (it.groups[1] != null && it.groups[3] == null) {
+    val retDecl = 1
+    val argsDecl = 3
+    val funcnameDecl = 2
+    if (it.groups[retDecl] == null && it.groups[argsDecl] == null) {
+        method { name = it.groupValues[funcnameDecl] }.all()
+    } else if (it.groups[retDecl] != null && it.groups[argsDecl] == null) {
         method {
-            name(it.groupValues[2])
-            returnType(it.groupValues[1].typeConvert())
+            name(it.groupValues[funcnameDecl])
+            returnType(it.groupValues[retDecl].typeConvert())
         }
-    } else if (it.groups[1] == null && it.groups[3] != null) {
-        val params = it.groupValues[3].split(',').map { v -> v.trim() }.filter { v -> v.isNotEmpty() }
+    } else if (it.groups[retDecl] == null && it.groups[argsDecl] != null) {
+        val params = it.groupValues[argsDecl].split(',').map { v -> v.trim() }.filter { v -> v.isNotEmpty() }
         method {
-            name(it.groupValues[2])
+            name(it.groupValues[funcnameDecl])
             if (params.isNotEmpty())
                 param(*params.map { param -> param.typeConvert() }.toTypedArray())
             else
                 emptyParam()
         }
     } else { // it.groups[1] != null && it.groups[3] != null
-        val params = it.groupValues[3].split(',').map { v -> v.trim() }.filter { v -> v.isNotEmpty() }
+        val params = it.groupValues[argsDecl].split(',').map { v -> v.trim() }.filter { v -> v.isNotEmpty() }
         method {
-            name(it.groupValues[2])
+            name(it.groupValues[funcnameDecl])
             if (params.isNotEmpty())
                 param(*params.map { param -> param.typeConvert() }.toTypedArray())
             else
                 emptyParam()
-            returnType(it.groupValues[1].typeConvert())
+            returnType(it.groupValues[retDecl].typeConvert())
         }
     }
 }

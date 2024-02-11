@@ -19,6 +19,7 @@ import cn.wankkoree.xp.webviewpp.databinding.DialogCloudRulesBinding
 import cn.wankkoree.xp.webviewpp.databinding.ActivityRuleBinding
 import cn.wankkoree.xp.webviewpp.http.bean.HookRules
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -66,7 +67,7 @@ class Rule : AppCompatActivity() {
                 setView(dialogBinding.root)
             }.show().also { dialog ->
                 dialogBinding.dialogCloudRulesVersions.doAfterTextChanged { version ->
-                    Fuel.get("${prefs("module").get(ModuleSP.data_source)}/rules/$pkg/$version.json")
+                    Fuel.get("${modulePrefs().get(ModuleSP.data_source)}/rules/$pkg/$version.json")
                         .responseObject<HookRules> { _, _, result ->
                             result.fold({ rules ->
                                 dialogBinding.dialogCloudRulesRules.removeAllViews()
@@ -292,7 +293,7 @@ class Rule : AppCompatActivity() {
                             })
                         }
                 }
-                Fuel.get("${prefs("module").get(ModuleSP.data_source)}/rules/$pkg/metadata.json")
+                Fuel.get("${modulePrefs().get(ModuleSP.data_source)}/rules/$pkg/metadata.json")
                     .responseObject<Metadata> { _, _, result ->
                         result.fold({ metadata ->
                             dialogBinding.dialogCloudRulesVersions.setSimpleItems(metadata.versions.toTypedArray())
