@@ -19,6 +19,7 @@ import cn.wankkoree.xp.webviewpp.databinding.DialogCloudRulesBinding
 import cn.wankkoree.xp.webviewpp.databinding.ActivityRuleBinding
 import cn.wankkoree.xp.webviewpp.http.bean.HookRules
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.appPrefs
 import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
@@ -325,7 +326,7 @@ class Rule : AppCompatActivity() {
                 application.toast(getString(R.string.s_cannot_be_empty, getString(R.string.rule_type)), false)
                 return@setOnClickListener
             } else {
-                with(prefs("apps_$pkg")) {
+                with(appPrefs(pkg)) {
                     try {
                         put(AppSP.hooks, name)
                     } catch (_: ValueAlreadyExistedInSet) {
@@ -543,7 +544,7 @@ class Rule : AppCompatActivity() {
             viewBinding.ruleHookMethod.setText("", false)
         } else {
             viewBinding.ruleName.setText(ruleName)
-            val hookJson = prefs("apps_$pkg").getString("hook_entry_$ruleName", "{}")
+            val hookJson = appPrefs(pkg).getString("hook_entry_$ruleName", "{}")
             try {
                 when(Gson().fromJson(hookJson, HookRules.HookRule::class.java).name) {
                     // TODO: 添加更多 hook 方法

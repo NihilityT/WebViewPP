@@ -23,6 +23,7 @@ import cn.wankkoree.xp.webviewpp.http.bean.api.npm.Versions
 import cn.wankkoree.xp.webviewpp.databinding.ActivityResourcesBinding
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
 import cn.wankkoree.xp.webviewpp.util.modulePrefs
+import cn.wankkoree.xp.webviewpp.util.resources
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.requests.CancellableRequest
 import com.github.kittinunf.fuel.gson.responseObject
@@ -54,6 +55,7 @@ class Resources : AppCompatActivity() {
         refresh()
 
         viewBinding.resourcesVconsoleDownload.isEnabled = false
+        val resources = resources()
         Fuel.get("https://data.jsdelivr.com/v1/package/npm/vconsole")
             .responseObject<Versions> { _, _, result ->
                 result.fold({
@@ -62,7 +64,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesVconsoleVersion.adapter = adapter
                     viewBinding.resourcesVconsoleVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesVconsoleDownload.isEnabled = true
-                    prefs("resources").edit { put(ResourcesSP.vConsole_latest, it.tags.latest) }
+                    resources.edit { put(ResourcesSP.vConsole_latest, it.tags.latest) }
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.vconsole)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.vconsole))), null)
@@ -79,7 +81,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesVconsolePluginSourcesVersion.adapter = adapter
                     viewBinding.resourcesVconsolePluginSourcesVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesVconsolePluginSourcesDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.vConsole_plugin_sources_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.vConsole_plugin_sources_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.vconsole_plugin_sources)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.vconsole_plugin_sources))), null)
@@ -96,7 +98,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesVconsolePluginStatsVersion.adapter = adapter
                     viewBinding.resourcesVconsolePluginStatsVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesVconsolePluginStatsDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.vConsole_plugin_stats_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.vConsole_plugin_stats_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.vconsole_plugin_stats)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.vconsole_plugin_stats))), null)
@@ -113,7 +115,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesVconsolePluginVueDevtoolsVersion.adapter = adapter
                     viewBinding.resourcesVconsolePluginVueDevtoolsVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesVconsolePluginVueDevtoolsDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.vConsole_plugin_vue_devtools_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.vConsole_plugin_vue_devtools_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.vconsole_plugin_vue_devtools)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.vconsole_plugin_vue_devtools))), null)
@@ -130,7 +132,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesVconsolePluginOutputlogVersion.adapter = adapter
                     viewBinding.resourcesVconsolePluginOutputlogVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesVconsolePluginOutputlogDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.vConsole_plugin_outputlog_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.vConsole_plugin_outputlog_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.vconsole_plugin_outputlog)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.vconsole_plugin_outputlog))), null)
@@ -147,7 +149,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaVersion.adapter = adapter
                     viewBinding.resourcesErudaVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaDownload.isEnabled = true
-                    prefs("resources").edit { put(ResourcesSP.eruda_latest, it.tags.latest) }
+                    resources.edit { put(ResourcesSP.eruda_latest, it.tags.latest) }
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda))), null)
@@ -164,7 +166,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginFpsVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginFpsVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginFpsDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_fps_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_fps_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_fps)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_fps))), null)
@@ -181,7 +183,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginFeaturesVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginFeaturesVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginFeaturesDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_features_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_features_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_features)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_features))), null)
@@ -198,7 +200,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginTimingVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginTimingVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginTimingDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_timing_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_timing_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_timing)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_timing))), null)
@@ -215,7 +217,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginMemoryVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginMemoryVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginMemoryDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_memory_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_memory_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_memory)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_memory))), null)
@@ -232,7 +234,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginCodeVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginCodeVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginCodeDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_code_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_code_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_code)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_code))), null)
@@ -249,7 +251,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginBenchmarkVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginBenchmarkVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginBenchmarkDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_benchmark_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_benchmark_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_benchmark)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_benchmark))), null)
@@ -266,7 +268,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginGeolocationVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginGeolocationVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginGeolocationDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_geolocation_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_geolocation_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_geolocation)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_geolocation))), null)
@@ -283,7 +285,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginDomVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginDomVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginDomDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_dom_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_dom_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_dom)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_dom))), null)
@@ -300,7 +302,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginOrientationVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginOrientationVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginOrientationDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_orientation_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_orientation_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_orientation)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_orientation))), null)
@@ -317,7 +319,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesErudaPluginTouchesVersion.adapter = adapter
                     viewBinding.resourcesErudaPluginTouchesVersion.setSelection(adapter.getPosition(it.tags.latest))
                     viewBinding.resourcesErudaPluginTouchesDownload.isEnabled = true
-                    prefs("resources").edit {put(ResourcesSP.eruda_plugin_touches_latest, it.tags.latest)}
+                    resources.edit {put(ResourcesSP.eruda_plugin_touches_latest, it.tags.latest)}
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.eruda_plugin_touches)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.eruda_plugin_touches))), null)
@@ -334,7 +336,7 @@ class Resources : AppCompatActivity() {
                     viewBinding.resourcesNebulaucsdkVersion.adapter = adapter
                     viewBinding.resourcesNebulaucsdkVersion.setSelection(adapter.getPosition(metadata.latest))
                     viewBinding.resourcesNebulaucsdkDownload.isEnabled = true
-                    prefs("resources").edit { put(ResourcesSP.nebulaUCSDK_latest, metadata.latest) }
+                    resources.edit { put(ResourcesSP.nebulaUCSDK_latest, metadata.latest) }
                 }, { e ->
                     loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, getString(R.string.nebulaucsdk)), e)
                     AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, getString(R.string.nebulaucsdk))), null)
@@ -748,7 +750,7 @@ class Resources : AppCompatActivity() {
         val erudaPluginOrientationVersions: HashSet<String>
         val erudaPluginTouchesVersions: HashSet<String>
         val nebulaUCSDKVersions: HashSet<String>
-        with(prefs("resources")) {
+        with(resources()) {
             vConsoleVersions = getSet(ResourcesSP.vConsole_versions)
             vConsolePluginSourcesVersions = getSet(ResourcesSP.vConsole_plugin_sources_versions)
             vConsolePluginStatsVersions = getSet(ResourcesSP.vConsole_plugin_stats_versions)

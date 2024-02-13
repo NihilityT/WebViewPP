@@ -35,6 +35,8 @@ import cn.wankkoree.xp.webviewpp.data.remove
 import cn.wankkoree.xp.webviewpp.databinding.ActivityAppBinding
 import cn.wankkoree.xp.webviewpp.http.bean.HookRules
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.appPrefs
+import cn.wankkoree.xp.webviewpp.util.apps
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -87,7 +89,7 @@ class App : AppCompatActivity() {
         viewBinding.appToolbarBack.setOnClickListener {
             finishAfterTransition()
         }
-        val appPrefs = prefs("apps_$pkg")
+        val appPrefs = appPrefs(pkg)
         viewBinding.appToolbarShare.setOnClickListener { v ->
             PopupMenu(this@App, v).apply {
                 menuInflater.inflate(R.menu.app_toolbar_share, menu)
@@ -340,10 +342,10 @@ class App : AppCompatActivity() {
                 state
             }
             if (state) {
-                prefs("apps").put(AppsSP.enabled, pkg)
+                apps().put(AppsSP.enabled, pkg)
                 AppCenterTool.trackEvent("application", hashMapOf("application" to "$pkg $version"))
             } else
-                prefs("apps").remove(AppsSP.enabled, pkg)
+                apps().remove(AppsSP.enabled, pkg)
             application.toast(getString(if (state) R.string.enabled else R.string.disabled), false)
             refresh()
         }
@@ -770,17 +772,16 @@ class App : AppCompatActivity() {
     }
 
     private fun checkUpdate() {
-        with(prefs()) {
-            name("module")
-            Fuel.get("${get(ModuleSP.data_source)}/rules/$pkg/$version.json")
-                .responseObject<HookRules> { _, _, result ->
-                    result.fold({ rules ->
-                        var hasUpdate = false
-                        name("apps_$pkg")
+        Fuel.get("${modulePrefs().get(ModuleSP.data_source)}/rules/$pkg/$version.json")
+            .responseObject<HookRules> { _, _, result ->
+                result.fold({ rules ->
+                    var hasUpdate = false
+                    with(appPrefs(pkg)) {
                         getSet(AppSP.hooks).forEach { ruleName ->
                             val hookJson = getString("hook_entry_$ruleName", "{}")
                             try {
-                                val targetRule = Gson().fromJson(hookJson, HookRules.HookRule::class.java)
+                                val targetRule =
+                                    Gson().fromJson(hookJson, HookRules.HookRule::class.java)
                                 if (targetRule.version > 0u) {
                                     when (targetRule.name) {
                                         // TODO: 添加更多 hook 方法
@@ -788,81 +789,129 @@ class App : AppCompatActivity() {
                                             if (rules.hookWebView != null) for (hookRule in rules.hookWebView) {
                                                 if (hookRule.name == ruleName) {
                                                     if (hookRule.version > targetRule.version) {
-                                                        application.toast(getString(R.string.there_are_updates_to_s, ruleName), false)
+                                                        application.toast(
+                                                            getString(
+                                                                R.string.there_are_updates_to_s,
+                                                                ruleName
+                                                            ), false
+                                                        )
                                                         hasUpdate = true
                                                     }
                                                     break
                                                 }
                                             }
                                         }
+
                                         "hookWebViewClient" -> {
                                             if (rules.hookWebViewClient != null) for (hookRule in rules.hookWebViewClient) {
                                                 if (hookRule.name == ruleName) {
                                                     if (hookRule.version > targetRule.version) {
-                                                        application.toast(getString(R.string.there_are_updates_to_s, ruleName), false)
+                                                        application.toast(
+                                                            getString(
+                                                                R.string.there_are_updates_to_s,
+                                                                ruleName
+                                                            ), false
+                                                        )
                                                         hasUpdate = true
                                                     }
                                                     break
                                                 }
                                             }
                                         }
+
                                         "replaceNebulaUCSDK" -> {
                                             if (rules.replaceNebulaUCSDK != null) for (hookRule in rules.replaceNebulaUCSDK) {
                                                 if (hookRule.name == ruleName) {
                                                     if (hookRule.version > targetRule.version) {
-                                                        application.toast(getString(R.string.there_are_updates_to_s, ruleName), false)
+                                                        application.toast(
+                                                            getString(
+                                                                R.string.there_are_updates_to_s,
+                                                                ruleName
+                                                            ), false
+                                                        )
                                                         hasUpdate = true
                                                     }
                                                     break
                                                 }
                                             }
                                         }
+
                                         "hookCrossWalk" -> {
                                             if (rules.hookCrossWalk != null) for (hookRule in rules.hookCrossWalk) {
                                                 if (hookRule.name == ruleName) {
                                                     if (hookRule.version > targetRule.version) {
-                                                        application.toast(getString(R.string.there_are_updates_to_s, ruleName), false)
+                                                        application.toast(
+                                                            getString(
+                                                                R.string.there_are_updates_to_s,
+                                                                ruleName
+                                                            ), false
+                                                        )
                                                         hasUpdate = true
                                                     }
                                                     break
                                                 }
                                             }
                                         }
+
                                         "hookXWebView" -> {
                                             if (rules.hookXWebView != null) for (hookRule in rules.hookXWebView) {
                                                 if (hookRule.name == ruleName) {
                                                     if (hookRule.version > targetRule.version) {
-                                                        application.toast(getString(R.string.there_are_updates_to_s, ruleName), false)
+                                                        application.toast(
+                                                            getString(
+                                                                R.string.there_are_updates_to_s,
+                                                                ruleName
+                                                            ), false
+                                                        )
                                                         hasUpdate = true
                                                     }
                                                     break
                                                 }
                                             }
                                         }
+
                                         else -> {
-                                            loggerE(BuildConfig.APPLICATION_ID, getString(R.string.unknown_hook_method)+": "+targetRule.name)
-                                            application.toast(getString(R.string.unknown_hook_method)+"\n"+targetRule.name, false)
+                                            loggerE(
+                                                BuildConfig.APPLICATION_ID,
+                                                getString(R.string.unknown_hook_method) + ": " + targetRule.name
+                                            )
+                                            application.toast(
+                                                getString(R.string.unknown_hook_method) + "\n" + targetRule.name,
+                                                false
+                                            )
                                             return@forEach // continue
                                         }
                                     }
                                 }
                             } catch (e: Exception) {
-                                loggerE(BuildConfig.APPLICATION_ID, getString(R.string.parse_failed), e)
-                                AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.parse_failed)), null)
-                                application.toast(getString(R.string.parse_failed)+"\n"+getString(R.string.please_reset), false)
+                                loggerE(
+                                    BuildConfig.APPLICATION_ID,
+                                    getString(R.string.parse_failed),
+                                    e
+                                )
+                                AppCenterTool.trackError(
+                                    e,
+                                    mapOf("msg" to getString(R.string.parse_failed)),
+                                    null
+                                )
+                                application.toast(
+                                    getString(R.string.parse_failed) + "\n" + getString(
+                                        R.string.please_reset
+                                    ), false
+                                )
                                 return@forEach // continue
                             }
                         }
-                        if (!hasUpdate) {
-                            application.toast(getString(R.string.is_the_latest_version), false)
-                        }
-                    }, { e ->
-                        loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, pkg+' '+getString(R.string.cloud_rules)), e)
-                        AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, pkg+' '+getString(R.string.cloud_rules))), null)
-                        application.toast(getString(R.string.pull_failed, pkg+' '+version+' '+getString(R.string.cloud_rules))+'\n'+getString(R.string.please_set_custom_hook_rules_then_push_rules_to_rules_repos), false)
-                    })
-                }
-        }
+                    }
+                    if (!hasUpdate) {
+                        application.toast(getString(R.string.is_the_latest_version), false)
+                    }
+                }, { e ->
+                    loggerE(BuildConfig.APPLICATION_ID, getString(R.string.pull_failed, pkg+' '+getString(R.string.cloud_rules)), e)
+                    AppCenterTool.trackError(e, mapOf("msg" to getString(R.string.pull_failed, pkg+' '+getString(R.string.cloud_rules))), null)
+                    application.toast(getString(R.string.pull_failed, pkg+' '+version+' '+getString(R.string.cloud_rules))+'\n'+getString(R.string.please_set_custom_hook_rules_then_push_rules_to_rules_repos), false)
+                })
+            }
     }
 
     private fun refresh() {
@@ -1371,7 +1420,7 @@ class App : AppCompatActivity() {
                         setMessage(R.string.do_you_really_delete_this_rule)
                         setNegativeButton(R.string.cancel) { _, _ -> }
                         setPositiveButton(R.string.confirm) { _, _ ->
-                            with(prefs("apps_$pkg")) {
+                            with(appPrefs(pkg)) {
                                 remove(AppSP.hooks, ruleName)
                                 edit { remove("hook_entry_$ruleName") }
                             }
@@ -1386,8 +1435,8 @@ class App : AppCompatActivity() {
     }
 
     private fun reset() {
-        try { prefs("apps").remove(AppsSP.enabled, pkg) } catch (_: ValueNotExistedInSet) { }
-        prefs("apps_$pkg").edit { clear() }
+        try { apps().remove(AppsSP.enabled, pkg) } catch (_: ValueNotExistedInSet) { }
+        appPrefs(pkg).edit { clear() }
         application.toast(getString(R.string.reset_completed), false)
     }
 

@@ -26,6 +26,7 @@ import cn.wankkoree.xp.webviewpp.http.bean.api.github.RepoRelease
 import cn.wankkoree.xp.webviewpp.databinding.ActivityMainBinding
 import cn.wankkoree.xp.webviewpp.databinding.DialogSupportBinding
 import cn.wankkoree.xp.webviewpp.util.AppCenterTool
+import cn.wankkoree.xp.webviewpp.util.apps
 import cn.wankkoree.xp.webviewpp.util.modulePrefs
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
@@ -169,7 +170,7 @@ class Main : AppCompatActivity() {
     }
 
     private fun refresh() {
-        viewBinding.mainAppsNum.text = getString(R.string.main_apps_num, prefs("apps").getSet(AppsSP.enabled).size)
+        viewBinding.mainAppsNum.text = getString(R.string.main_apps_num, apps().getSet(AppsSP.enabled).size)
     }
 
     private fun checkUpdate() {

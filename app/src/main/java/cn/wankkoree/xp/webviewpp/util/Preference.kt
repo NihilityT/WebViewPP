@@ -17,3 +17,12 @@ fun PackageParam.source(name: String, version: String) =
 
 fun Context.modulePrefs() =
     prefs("module")
+
+fun Context.resources() =
+    prefs("resources")
+
+fun Context.apps() =
+    prefs("apps")
+
+fun Context.appPrefs(packageName: String) =
+    prefs("apps_${packageName}")
